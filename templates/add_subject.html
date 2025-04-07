@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add New Subject</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/">Welcome</a> |
+        <a href="/add_trainer">Add Trainer</a> |
+        <a href="/list_trainers">List Trainers</a> |
+        <a href="/get_trainer_form">Find Trainer by ID</a> |
+        <a href="/delete_trainer_form">Delete Trainer by ID</a> |
+        <a href="/find_trainers_by_subject_form">Find Trainers by Subject</a> |
+        <a href="/add_subject">Add Subject</a> |
+        <a href="/list_subjects">List Subjects</a> |
+        <a href="/get_subject_form">Find Subject by ID</a>
+    </nav>
+    <hr>
+    <h1>Add New Subject</h1>
+    <form id="addSubjectForm">
+        <div>
+            <label for="name">Subject Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+        </div>
+        <button type="submit">Add Subject</button>
+    </form>
+    <div id="message-area"></div>
+    <p><a href="/list_subjects">View All Subjects</a></p>
+
+    <script>
+        document.getElementById('addSubjectForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const messageArea = document.getElementById('message-area');
+
+            fetch('/add_subject', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                messageArea.textContent = data.message || data.error || 'Something went wrong.';
+                if (data.message) {
+                    document.getElementById('addSubjectForm').reset();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                messageArea.textContent = 'An error occurred while adding the subject.';
+            });
+        });
+    </script>
+</body>
+</html>

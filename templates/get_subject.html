@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Find Subject by ID</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/add_trainer">Add Trainer</a> |
+        <a href="/list_trainers">List Trainers</a> |
+        <a href="/get_trainer_form">Find Trainer by ID</a> |
+        <a href="/delete_trainer_form">Delete Trainer by ID</a> |
+        <a href="/find_trainers_by_subject_form">Find Trainers by Subject</a> |
+        <a href="/add_subject">Add Subject</a> |
+        <a href="/list_subjects">List Subjects</a> |
+        <a href="/get_subject_form">Find Subject by ID</a>
+    </nav>
+    <hr>
+    <h1>Find Subject by ID</h1>
+    <form id="getSubjectForm">
+        <div>
+            <label for="subjectId">Enter Subject ID:</label>
+            <input type="number" id="subjectId" name="subjectId" required>
+        </div>
+        <button type="submit">Find Subject</button>
+    </form>
+
+    <div id="subjectDetails">
+        </div>
+        <div id="message-area"></div>
+
+    <p><a href="/list_subjects">Back to All Subjects</a></p>
+
+    <script>
+        document.getElementById('getSubjectForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const subjectId = document.getElementById('subjectId').value;
+            fetch(`/subject/${subjectId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const subjectDetailsDiv = document.getElementById('subjectDetails');
+                    subjectDetailsDiv.innerHTML = ''; // Clear previous results
+                    if (data.subject) {
+                        let detailsText = `Subject Name: ${data.subject.name}, ID: ${data.subject.id}`;
+                        subjectDetailsDiv.textContent = detailsText;
+
+                        if (data.taught_by_trainers && data.taught_by_trainers.length > 0) {
+                            const trainersHeading = document.createElement('h3');
+                            trainersHeading.textContent = 'Taught By:';
+                            subjectDetailsDiv.appendChild(trainersHeading);
+                            const ul = document.createElement('ul');
+                            data.taught_by_trainers.forEach(trainer => {
+                                const li = document.createElement('li');
+                                li.textContent = `${trainer.name} (Expertise: ${trainer.expertise}, ID: ${trainer.id})`;
+                                ul.appendChild(li);
+                            });
+                            subjectDetailsDiv.appendChild(ul);
+                        } else {
+                            const noTrainersMessage = document.createElement('p');
+                            noTrainersMessage.textContent = 'No trainers currently teach this subject.';
+                            subjectDetailsDiv.appendChild(noTrainersMessage);
+                        }
+                    } else if (data.error) {
+                        subjectDetailsDiv.textContent = data.error;
+                    } else {
+                        subjectDetailsDiv.textContent = 'Subject not found.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    subjectDetailsDiv.textContent = 'An error occurred while fetching subject details.';
+                });
+        });
+    </script>
+</body>
+</html>

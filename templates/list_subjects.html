@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>List of Subjects</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/add_trainer">Add Trainer</a> |
+        <a href="/list_trainers">List Trainers</a> |
+        <a href="/get_trainer_form">Find Trainer by ID</a> |
+        <a href="/delete_trainer_form">Delete Trainer by ID</a> |
+        <a href="/find_trainers_by_subject_form">Find Trainers by Subject</a> |
+        <a href="/add_subject">Add Subject</a> |
+        <a href="/list_subjects">List Subjects</a> |
+        <a href="/get_subject_form">Find Subject by ID</a>
+    </nav>
+    <hr>
+    <h1>List of Subjects</h1>
+    <table id="subject-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+    <p><a href="/add_subject">Add New Subject</a></p>
+
+    <script>
+        fetch('/subject')
+            .then(response => response.json())
+            .then(data => {
+                const subjectTableBody = document.querySelector('#subject-table tbody');
+                subjectTableBody.innerHTML = '';
+                data.subjects.forEach(subject => {
+                    const row = subjectTableBody.insertRow();
+                    const idCell = row.insertCell();
+                    const nameCell = row.insertCell();
+                    const actionsCell = row.insertCell();
+
+                    idCell.textContent = subject.id;
+                    nameCell.textContent = subject.name;
+
+                    const viewLink = document.createElement('a');
+                    viewLink.href = `/get_subject_form?id=${subject.id}`;
+                    viewLink.textContent = 'View Details';
+                    actionsCell.appendChild(viewLink);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    </script>
+</body>
+</html>

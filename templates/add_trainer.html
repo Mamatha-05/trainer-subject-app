@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Trainer</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/add_trainer">Add Trainer</a> |
+        <a href="/list_trainers">List Trainers</a> |
+        <a href="/get_trainer_form">Find Trainer by ID</a> |
+        <a href="/delete_trainer_form">Delete Trainer by ID</a> |
+        <a href="/find_trainers_by_subject_form">Find Trainers by Subject</a> |
+        <a href="/add_subject">Add Subject</a> |
+        <a href="/list_subjects">List Subjects</a> |
+        <a href="/get_subject_form">Find Subject by ID</a>
+    </nav>
+    <hr>
+    <h1>Add New Trainer</h1>
+    <form id="addTrainerForm">
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+        </div>
+        <div>
+            <label for="expertise">Expertise (comma-separated):</label>
+            <input type="text" id="expertise" name="expertise" required><br><br>
+        </div>
+        <button type="submit">Add Trainer</button>
+    </form>
+    <div id="message-area"></div>
+    <p><a href="/list_trainers">View All Trainers</a></p>
+
+    <script>
+        document.getElementById('addTrainerForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const name = document.getElementById('name').value;
+    const expertise = document.getElementById('expertise').value;
+    const messageArea = document.getElementById('message-area');
+
+    fetch('/add_trainer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, expertise: expertise }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        messageArea.textContent = data.message || data.error || 'Something went wrong.';
+        if (data.message) {
+            document.getElementById('addTrainerForm').reset();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        messageArea.textContent = 'An error occurred while adding the trainer.';
+    });
+});
+    </script>
+</body>
+</html>

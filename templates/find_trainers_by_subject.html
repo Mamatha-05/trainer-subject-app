@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Find Trainers by Subject</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/add_trainer">Add Trainer</a> |
+        <a href="/list_trainers">List Trainers</a> |
+        <a href="/get_trainer_form">Find Trainer by ID</a> |
+        <a href="/delete_trainer_form">Delete Trainer by ID</a> |
+        <a href="/find_trainers_by_subject_form">Find Trainers by Subject</a> |
+        <a href="/add_subject">Add Subject</a> |
+        <a href="/list_subjects">List Subjects</a> |
+        <a href="/get_subject_form">Find Subject by ID</a>
+    </nav>
+    <hr>
+    <h1>Find Trainers by Subject</h1>
+    <form id="findTrainersBySubjectForm">
+        <div>
+            <label for="subjectName">Enter Subject Name:</label>
+            <input type="text" id="subjectName" name="subjectName" required>
+        </div>
+        <button type="submit">Find Trainers</button>
+    </form>
+
+    <div id="trainersBySubject">
+        </div>
+        <div id="message-area"></div>
+
+    <p><a href="/list_trainers">Back to All Trainers</a></p>
+
+    <script>
+        document.getElementById('findTrainersBySubjectForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const subjectName = document.getElementById('subjectName').value;
+            fetch(`/trainer/subject?name=${subjectName}`)
+                .then(response => response.json())
+                .then(data => {
+                    const trainersBySubjectDiv = document.getElementById('trainersBySubject');
+                    trainersBySubjectDiv.innerHTML = ''; // Clear previous results
+                    if (data.trainers && data.trainers.length > 0) {
+                        const ul = document.createElement('ul');
+                        data.trainers.forEach(trainer => {
+                            const li = document.createElement('li');
+                            li.textContent = `${trainer.name} (Expertise: ${trainer.expertise}, ID: ${trainer.id})`;
+                            ul.appendChild(li);
+                        });
+                        trainersBySubjectDiv.appendChild(ul);
+                    } else if (data.subject) {
+                        trainersBySubjectDiv.textContent = `No trainers found for the subject: ${data.subject}`;
+                    } else if (data.error) {
+                        trainersBySubjectDiv.textContent = data.error;
+                    } else {
+                        trainersBySubjectDiv.textContent = 'No trainers found.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('trainersBySubject').textContent = 'An error occurred while searching.';
+                });
+        });
+    </script>
+</body>
+</html>
