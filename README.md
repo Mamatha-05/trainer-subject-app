@@ -44,7 +44,7 @@ This application provides basic functionality for managing trainers and subjects
 
 ## GitHub Repository
 
-The project is available in a private GitHub repository at: https://github.com/Mamatha-05/trainer-subject-app
+The project is available in a public GitHub repository at: https://github.com/Mamatha-05/trainer-subject-app
 
 ## Known Issues/Limitations
 
