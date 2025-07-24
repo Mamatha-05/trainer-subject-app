@@ -59,3 +59,4 @@ The project is available in a public GitHub repository at: https://github.com/Ma
 * Add user authentication and authorization.
 * Improve UI/UX.
 * Implement comprehensive server-side validation and automated testing.
+# This application provides basic functionality for managing trainers and subjects within an educational institute.
